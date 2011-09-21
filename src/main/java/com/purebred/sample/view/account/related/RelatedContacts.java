@@ -55,6 +55,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("serial")
 @Component
 @Scope("prototype")
 public class RelatedContacts extends ToManyRelationship<Contact> {
@@ -72,6 +73,7 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
         return relatedContactsResults;
     }
 
+    @SuppressWarnings("rawtypes")
     @Component
     @Scope("prototype")
     public static class RelatedContactsResults extends ToManyAggregationRelationshipResults<Contact> {
@@ -135,6 +137,7 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
 
     @Component
     @Scope("prototype")
+    @SuppressWarnings("rawtypes")
     public static class RelatedContactsQuery extends ToManyRelationshipQuery<Contact, Account> {
 
         @Resource

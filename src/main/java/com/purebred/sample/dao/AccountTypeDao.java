@@ -47,6 +47,7 @@ import java.util.List;
 import static com.purebred.sample.dao.CacheSettings.setReadOnly;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class AccountTypeDao extends EntityDao<AccountType, String> {
 
     @Override

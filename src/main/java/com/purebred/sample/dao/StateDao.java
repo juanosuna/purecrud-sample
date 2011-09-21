@@ -48,6 +48,7 @@ import java.util.List;
 import static com.purebred.sample.dao.CacheSettings.setReadOnly;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class StateDao extends EntityDao<State, String> {
     public List<State> findByCountry(Country country) {
         Query query = getEntityManager().createQuery("SELECT s FROM State s WHERE s.country = :country ORDER BY s.displayName");
