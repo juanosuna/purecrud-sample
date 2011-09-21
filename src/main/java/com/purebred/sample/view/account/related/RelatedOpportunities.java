@@ -1,26 +1,46 @@
 /*
- * BROWN BAG CONFIDENTIAL
+ * Copyright (c) 2011 Brown Bag Consulting.
+ * This file is part of the PureCRUD project.
+ * Author: Juan Osuna
  *
- * Copyright (c) 2011 Brown Bag Consulting LLC
- * All Rights Reserved.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License Version 3
+ * as published by the Free Software Foundation with the addition of the
+ * following permission added to Section 15 as permitted in Section 7(a):
+ * FOR ANY PART OF THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY
+ * Brown Bag Consulting, Brown Bag Consulting DISCLAIMS THE WARRANTY OF
+ * NON INFRINGEMENT OF THIRD PARTY RIGHTS.
  *
- * NOTICE:  All information contained herein is, and remains
- * the property of Brown Bag Consulting LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to Brown Bag Consulting LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Brown Bag Consulting LLC.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License.
+ *
+ * You can be released from the requirements of the license by purchasing
+ * a commercial license. Buying such a license is mandatory as soon as you
+ * develop commercial activities involving the PureCRUD software without
+ * disclosing the source code of your own applications. These activities
+ * include: offering paid services to customers as an ASP, providing
+ * services from a web application, shipping PureCRUD with a closed
+ * source product.
+ *
+ * For more information, please contact Brown Bag Consulting at this
+ * address: juan@brownbagconsulting.com.
  */
 
 package com.purebred.sample.view.account.related;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
-import com.purebred.core.view.entity.field.DisplayFields;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationshipResults;
+import com.purebred.core.view.field.DisplayFields;
+import com.purebred.core.view.tomanyrelationship.ToManyAggregationRelationshipResults;
+import com.purebred.core.view.tomanyrelationship.ToManyRelationship;
 import com.purebred.sample.dao.OpportunityDao;
 import com.purebred.sample.entity.Account;
 import com.purebred.sample.entity.Opportunity;
@@ -47,13 +67,13 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
     }
 
     @Override
-    public RelatedOpportunitiesResults getResultsComponent() {
+    public RelatedOpportunitiesResults getResults() {
         return relatedOpportunitiesResults;
     }
 
     @Component
     @Scope("prototype")
-    public static class RelatedOpportunitiesResults extends ToManyRelationshipResults<Opportunity> {
+    public static class RelatedOpportunitiesResults extends ToManyAggregationRelationshipResults<Opportunity> {
 
         @Resource
         private OpportunityDao opportunityDao;
@@ -92,6 +112,11 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
         }
 
         @Override
+        public String getChildPropertyId() {
+            return "opportunities";
+        }
+
+        @Override
         public String getParentPropertyId() {
             return "account";
         }
@@ -112,8 +137,8 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
         private Account account;
 
         @Override
-        public void setParent(Account account) {
-            this.account = account;
+        public void setParent(Account parent) {
+            this.account = parent;
         }
 
         @Override
@@ -149,7 +174,8 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
         public Path buildOrderBy(Root<Opportunity> rootEntity) {
             if (getOrderByPropertyId().equals("account.name")) {
                 return rootEntity.join("account", JoinType.LEFT).get("name");
-            } if (getOrderByPropertyId().equals("amountWeightedInUSDFormatted")) {
+            }
+            if (getOrderByPropertyId().equals("amountWeightedInUSDFormatted")) {
                 return rootEntity.get("amountWeightedInUSD");
             } else {
                 return null;
